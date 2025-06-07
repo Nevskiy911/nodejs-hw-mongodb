@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --env-file=.env ./src/utils/index.js",
-    "dev": "nodemon --env-file=.env ./src/utils/index.js"
+    "start": "node ./src/utils/index.js",
+    "dev": "nodemon ./src/utils/index.js"
   },
   "repository": {
     "type": "git",
