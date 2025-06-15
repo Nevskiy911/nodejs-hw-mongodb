@@ -6,6 +6,7 @@ export const initMongoDbConnection = async () => {
   const password = getEnvVar('MONGO_DB_PASSWORD');
   const host = getEnvVar('MONGO_DB_HOST');
   const db = getEnvVar('MONGO_DB_DATABASE');
+
   const uri = `mongodb+srv://${user}:${password}@${host}/${db}?retryWrites=true&w=majority&appName=Cluster0`;
 
   try {
@@ -15,7 +16,7 @@ export const initMongoDbConnection = async () => {
       'Pinged your deployment. You successfully connected to MongoDB!',
     );
   } catch (err) {
-    console.error(err);
+    console.error('MongoDB connection error:', err);
     process.exit(1);
   }
 };
