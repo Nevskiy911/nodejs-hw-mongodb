@@ -2,8 +2,6 @@ import express from 'express';
 import { randomUUID } from 'node:crypto';
 import pino from 'pino-http';
 import cors from 'cors';
-import { getEnvVar } from './utils/getEnvVar.js';
-import { ENV_VARS } from './constants/envVars.js';
 import contactsRouter from './routers/contacts.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
@@ -33,9 +31,5 @@ export const setupServer = () => {
 
   app.use(errorHandler);
 
-  const PORT = getEnvVar(ENV_VARS.PORT) || 3000;
-
-  app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
-  });
+  return app;
 };

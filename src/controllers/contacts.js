@@ -1,9 +1,29 @@
-import mongoose from 'mongoose';
-import { Contact } from '../db/models/contact.js';
-import createHttpError from 'http-errors';
+import {
+  createContactService,
+  deleteContactService,
+  getAllContactsService,
+  getContactByIdService,
+  patchContactService,
+  putContactService,
+} from '../services/contacts.js';
+import {
+  parseFilters,
+  parsePaginationParams,
+  parseSortParams,
+} from '../utils/parse-helpers.js';
 
-export const getAllContacts = async (req, res, next) => {
-  const contacts = await Contact.find({});
+export const getAllContacts = async (req, res) => {
+  const { page, perPage } = parsePaginationParams(req.query);
+  const { sortBy, sortOrder } = parseSortParams(req.query);
+  const filters = parseFilters(req.query);
+  const contacts = await getAllContactsService({
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+    filters,
+  });
+
   res.status(200).json({
     status: 200,
     message: 'Successfully found contacts!',
@@ -11,18 +31,10 @@ export const getAllContacts = async (req, res, next) => {
   });
 };
 
-export const getContactById = async (req, res, next) => {
+export const getContactById = async (req, res) => {
   const { contactId } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(contactId)) {
-    throw createHttpError(404, 'Contact not found');
-  }
-
-  const contact = await Contact.findById(contactId);
-
-  if (!contact) {
-    throw createHttpError(404, `Contact ${contactId} not found`);
-  }
+  const contact = await getContactByIdService(contactId);
 
   res.status(200).json({
     status: 200,
@@ -31,8 +43,9 @@ export const getContactById = async (req, res, next) => {
   });
 };
 
-export const createContact = async (req, res, next) => {
-  const newContact = await Contact.create(req.body);
+export const createContact = async (req, res) => {
+  const newContact = await createContactService(req.body);
+
   res.status(201).json({
     status: 201,
     message: 'Contact created successfully!',
@@ -40,21 +53,10 @@ export const createContact = async (req, res, next) => {
   });
 };
 
-export const patchContact = async (req, res, next) => {
+export const patchContact = async (req, res) => {
   const { contactId } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(contactId)) {
-    throw createHttpError(400, 'Invalid contact ID');
-  }
-
-  const updated = await Contact.findByIdAndUpdate(contactId, req.body, {
-    new: true,
-    runValidators: true,
-  });
-
-  if (!updated) {
-    throw createHttpError(404, 'Contact not found');
-  }
+  const updated = await patchContactService(contactId, req.body);
 
   res.status(200).json({
     status: 200,
@@ -63,29 +65,9 @@ export const patchContact = async (req, res, next) => {
   });
 };
 
-export const putContact = async (req, res, next) => {
+export const putContact = async (req, res) => {
   const { contactId } = req.params;
-  console.log('PUT contactId:', contactId);
-  console.log('Request body:', req.body);
-
-  if (!mongoose.Types.ObjectId.isValid(contactId)) {
-    throw createHttpError(400, 'Invalid contact ID');
-  }
-
-  const { name, phoneNumber, contactType } = req.body;
-  if (!name || !phoneNumber || !contactType) {
-    throw createHttpError(400, 'Missing required fields for PUT');
-  }
-
-  const updated = await Contact.findByIdAndUpdate(contactId, req.body, {
-    new: true,
-    overwrite: true,
-    runValidators: true,
-  });
-
-  if (!updated) {
-    throw createHttpError(404, 'Contact not found');
-  }
+  const updated = await putContactService(contactId, req.body);
 
   res.status(200).json({
     status: 200,
@@ -94,17 +76,10 @@ export const putContact = async (req, res, next) => {
   });
 };
 
-export const deleteContact = async (req, res, next) => {
+export const deleteContact = async (req, res) => {
   const { contactId } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(contactId)) {
-    throw createHttpError(404, 'Invalid contact ID');
-  }
-
-  const deleted = await Contact.findByIdAndDelete(contactId);
-  if (!deleted) {
-    throw createHttpError(404, 'Contact not found');
-  }
+  await deleteContactService(contactId);
 
   res.status(204).end();
 };
