@@ -13,23 +13,27 @@ import { validateBody } from '../middlewares/validateBody.js';
 import { createContactSchema } from '../validation/create-contact-schema.js';
 import { updateContactSchema } from '../validation/update-contact-schema.js';
 
-const router = express.Router();
+const contactsRouter = express.Router();
 
-router.use('/:contactId', validateMongoDBId('contactId'));
+contactsRouter.use('contacts/:contactId', validateMongoDBId('contactId'));
 
-router.get('/', ctrlWrapper(getAllContacts));
-router.get('/:contactId', ctrlWrapper(getContactById));
-router.post('/', validateBody(createContactSchema), ctrlWrapper(createContact));
-router.put(
-  '/:contactId',
+contactsRouter.get('/contacts', ctrlWrapper(getAllContacts));
+contactsRouter.get('/contacts/:contactId', ctrlWrapper(getContactById));
+contactsRouter.post(
+  '/contacts',
+  validateBody(createContactSchema),
+  ctrlWrapper(createContact),
+);
+contactsRouter.put(
+  '/contacts/:contactId',
   validateBody(createContactSchema),
   ctrlWrapper(putContact),
 );
-router.patch(
-  '/:contactId',
+contactsRouter.patch(
+  'contacts/:contactId',
   validateBody(updateContactSchema),
   ctrlWrapper(patchContact),
 );
-router.delete('/:contactId', ctrlWrapper(deleteContact));
+contactsRouter.delete('/contacts/:contactId', ctrlWrapper(deleteContact));
 
-export default router;
+export default contactsRouter;
