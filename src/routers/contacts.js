@@ -12,10 +12,17 @@ import { validateMongoDBId } from '../middlewares/isValidId.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { createContactSchema } from '../validation/create-contact-schema.js';
 import { updateContactSchema } from '../validation/update-contact-schema.js';
+import { authenticate } from '../middlewares/authenticate-middleware.js';
+import { checkRoles } from '../middlewares/check-roles-middleware.js';
 
 const contactsRouter = express.Router();
+contactsRouter.use('/contacts', authenticate);
 
-contactsRouter.use('contacts/:contactId', validateMongoDBId('contactId'));
+contactsRouter.use(
+  '/contacts/:contactId',
+  validateMongoDBId('contactId'),
+  checkRoles,
+);
 
 contactsRouter.get('/contacts', ctrlWrapper(getAllContacts));
 contactsRouter.get('/contacts/:contactId', ctrlWrapper(getContactById));
@@ -30,7 +37,7 @@ contactsRouter.put(
   ctrlWrapper(putContact),
 );
 contactsRouter.patch(
-  'contacts/:contactId',
+  '/contacts/:contactId',
   validateBody(updateContactSchema),
   ctrlWrapper(patchContact),
 );

@@ -1,11 +1,11 @@
 import express from 'express';
-import { randomUUID } from 'node:crypto';
 import pino from 'pino-http';
 import cors from 'cors';
-import contactsRouter from './routers/contacts.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import cookieParser from 'cookie-parser';
+import { requestIdMiddleware } from './middlewares/requestId.js';
+import router from './routers/index.js';
 
 export const setupServer = () => {
   const app = express();
@@ -13,7 +13,7 @@ export const setupServer = () => {
   app.use(cors(), pino(), cookieParser(), requestIdMiddleware);
   app.use(
     express.json({
-      type: ['application/json', 'aplication/vnd.api+json'],
+      type: ['application/json', 'application/vnd.api+json'],
       limit: '100kb',
     }),
   );
@@ -26,12 +26,7 @@ export const setupServer = () => {
     }),
   );
 
-  app.use((req, res, next) => {
-    req.id = randomUUID();
-    next();
-  });
-
-  app.use('/contacts', contactsRouter);
+  app.use('/', router);
 
   app.use(notFoundHandler);
 

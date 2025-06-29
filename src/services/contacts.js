@@ -20,6 +20,10 @@ export const getAllContactsService = async ({
     contactFilters.where('isFavourite').equals(filters.isFavourite);
   }
 
+  if (filters.userId) {
+    contactFilters.where('userId').equals(filters.userId);
+  }
+
   const [contacts, contactCount] = await Promise.all([
     Contact.find()
       .merge(contactFilters)

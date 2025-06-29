@@ -1,3 +1,4 @@
+import { ROLES } from '../constants/roles.js';
 import {
   createContactService,
   deleteContactService,
@@ -16,6 +17,10 @@ export const getAllContacts = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
   const filters = parseFilters(req.query);
+  if (req.user.role === ROLES.USER) {
+    filters.userId = req.user._id;
+  }
+
   const contacts = await getAllContactsService({
     page,
     perPage,
@@ -44,7 +49,10 @@ export const getContactById = async (req, res) => {
 };
 
 export const createContact = async (req, res) => {
-  const newContact = await createContactService(req.body);
+  const newContact = await createContactService({
+    ...req.body,
+    userId: req.body.userId ?? req.user._id,
+  });
 
   res.status(201).json({
     status: 201,

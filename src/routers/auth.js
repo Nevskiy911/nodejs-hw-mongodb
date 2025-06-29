@@ -1,11 +1,13 @@
 import { Router } from 'express';
 import {
   loginUserController,
+  logoutUserController,
+  refreshSessionController,
   registerUserController,
-} from '../controllers/auth';
-import { validateBody } from '../middlewares/validateBody';
-import { registerUserSchema } from '../validation/register-user-schema';
-import { loginUserSchema } from '../validation/login-user-schema';
+} from '../controllers/auth.js';
+import { validateBody } from '../middlewares/validateBody.js';
+import { registerUserSchema } from '../validation/register-user-schema.js';
+import { loginUserSchema } from '../validation/login-user-schema.js';
 
 const authRouter = Router();
 
@@ -19,7 +21,7 @@ authRouter.post(
   validateBody(loginUserSchema),
   loginUserController,
 );
-authRouter.post('/auth/logout');
-authRouter.post('/auth/refresh-session');
+authRouter.post('/auth/logout', logoutUserController);
+authRouter.post('/auth/refresh-session', refreshSessionController);
 
 export default authRouter;
