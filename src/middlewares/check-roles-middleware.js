@@ -3,7 +3,7 @@ import { ROLES } from '../constants/roles.js';
 import { Contact } from '../db/models/contact.js';
 
 export const checkRoles = async (req, res, next) => {
-  if (req.user.role === ROLES.MODER) {
+  if (req.user.role === ROLES.ADMIN) {
     return next();
   }
 

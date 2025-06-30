@@ -1,11 +1,11 @@
 import express from 'express';
 import {
   getAllContacts,
-  getContactById,
   createContact,
   deleteContact,
   patchContact,
   putContact,
+  getOneContact,
 } from '../controllers/contacts.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { validateMongoDBId } from '../middlewares/isValidId.js';
@@ -25,7 +25,7 @@ contactsRouter.use(
 );
 
 contactsRouter.get('/contacts', ctrlWrapper(getAllContacts));
-contactsRouter.get('/contacts/:contactId', ctrlWrapper(getContactById));
+contactsRouter.get('/contacts/:contactId', ctrlWrapper(getOneContact));
 contactsRouter.post(
   '/contacts',
   validateBody(createContactSchema),

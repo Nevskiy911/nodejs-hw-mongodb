@@ -1,6 +1,7 @@
 import { Contact } from '../db/models/contact.js';
 import createHttpError from 'http-errors';
 import { createPaginationMetadata } from '../utils/create-pagination-metadata.js';
+import { ROLES } from '../constants/roles.js';
 
 export const getAllContactsService = async ({
   page,
@@ -39,8 +40,14 @@ export const getAllContactsService = async ({
   return { contacts, ...metadata };
 };
 
-export const getContactByIdService = async (contactId) => {
-  const contact = await Contact.findById(contactId);
+export const getOneContactService = async (contactId, userId, role) => {
+  const query = { _id: contactId };
+
+  if (role === ROLES.USER) {
+    query.userId = userId;
+  }
+
+  const contact = await Contact.findOne(query);
 
   if (!contact) {
     throw createHttpError(404, `Contact ${contactId} not found`);
@@ -53,11 +60,15 @@ export const createContactService = async (data) => {
   return Contact.create(data);
 };
 
-export const patchContactService = async (contactId, data) => {
-  const updated = await Contact.findByIdAndUpdate(contactId, data, {
-    new: true,
-    runValidators: true,
-  });
+export const patchContactService = async (contactId, data, userId) => {
+  const updated = await Contact.findOneAndUpdate(
+    { _id: contactId, userId },
+    data,
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
 
   if (!updated) {
     throw createHttpError(404, 'Contact not found');
@@ -66,20 +77,30 @@ export const patchContactService = async (contactId, data) => {
   return updated;
 };
 
-export const putContactService = async (id, data) => {
-  const updated = await Contact.findByIdAndUpdate(id, data, {
-    new: true,
-    overwrite: true,
-    runValidators: true,
-  });
+export const putContactService = async (contactId, data, userId) => {
+  const updated = await Contact.findOneAndUpdate(
+    { _id: contactId, userId },
+    { ...data, userId },
+    {
+      new: true,
+      overwrite: true,
+      runValidators: true,
+    },
+  );
   if (!updated) {
     throw createHttpError(404, 'Contact not found');
   }
   return updated;
 };
 
-export const deleteContactService = async (id) => {
-  const deleted = await Contact.findByIdAndDelete(id);
+export const deleteContactService = async (contactId, userId, role) => {
+  const query = { _id: contactId };
+
+  if (role === ROLES.USER) {
+    query.userId = userId;
+  }
+
+  const deleted = await Contact.findOneAndDelete(query);
   if (!deleted) {
     throw createHttpError(404, 'Contact not found');
   }

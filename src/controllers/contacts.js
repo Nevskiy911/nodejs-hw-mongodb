@@ -3,7 +3,7 @@ import {
   createContactService,
   deleteContactService,
   getAllContactsService,
-  getContactByIdService,
+  getOneContactService,
   patchContactService,
   putContactService,
 } from '../services/contacts.js';
@@ -19,6 +19,8 @@ export const getAllContacts = async (req, res) => {
   const filters = parseFilters(req.query);
   if (req.user.role === ROLES.USER) {
     filters.userId = req.user._id;
+  } else if (req.user.role === ROLES.ADMIN) {
+    delete filters.userId;
   }
 
   const contacts = await getAllContactsService({
@@ -36,10 +38,12 @@ export const getAllContacts = async (req, res) => {
   });
 };
 
-export const getContactById = async (req, res) => {
+export const getOneContact = async (req, res) => {
   const { contactId } = req.params;
+  const userId = req.user._id;
+  const role = req.user.role;
 
-  const contact = await getContactByIdService(contactId);
+  const contact = await getOneContactService(contactId, userId, role);
 
   res.status(200).json({
     status: 200,
@@ -63,8 +67,9 @@ export const createContact = async (req, res) => {
 
 export const patchContact = async (req, res) => {
   const { contactId } = req.params;
+  const userId = req.user._id;
 
-  const updated = await patchContactService(contactId, req.body);
+  const updated = await patchContactService(contactId, req.body, userId);
 
   res.status(200).json({
     status: 200,
@@ -75,7 +80,9 @@ export const patchContact = async (req, res) => {
 
 export const putContact = async (req, res) => {
   const { contactId } = req.params;
-  const updated = await putContactService(contactId, req.body);
+  const userId = req.user._id;
+
+  const updated = await putContactService(contactId, req.body, userId);
 
   res.status(200).json({
     status: 200,
@@ -86,8 +93,10 @@ export const putContact = async (req, res) => {
 
 export const deleteContact = async (req, res) => {
   const { contactId } = req.params;
+  const userId = req.user._id;
+  const role = req.user.role;
 
-  await deleteContactService(contactId);
+  await deleteContactService(contactId, userId, role);
 
   res.status(204).end();
 };
