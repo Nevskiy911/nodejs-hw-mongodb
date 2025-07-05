@@ -2,6 +2,7 @@ import { Contact } from '../db/models/contact.js';
 import createHttpError from 'http-errors';
 import { createPaginationMetadata } from '../utils/create-pagination-metadata.js';
 import { ROLES } from '../constants/roles.js';
+import { saveFile } from '../utils/save-file.js';
 
 export const getAllContactsService = async ({
   page,
@@ -104,4 +105,13 @@ export const deleteContactService = async (contactId, userId, role) => {
   if (!deleted) {
     throw createHttpError(404, 'Contact not found');
   }
+};
+
+export const uploadContactsPhoto = async (contactId, file) => {
+  const url = await saveFile(file);
+  const contact = await Contact.findByIdAndUpdate(contactId, {
+    photoUrl: url,
+  });
+
+  return contact;
 };

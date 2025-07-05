@@ -6,6 +6,7 @@ import {
   getOneContactService,
   patchContactService,
   putContactService,
+  uploadContactsPhoto,
 } from '../services/contacts.js';
 import {
   parseFilters,
@@ -99,4 +100,14 @@ export const deleteContact = async (req, res) => {
   await deleteContactService(contactId, userId, role);
 
   res.status(204).end();
+};
+
+export const uploadContactPhoto = async (req, res) => {
+  const { contactId } = req.params;
+  const contact = await uploadContactsPhoto(contactId, req.file);
+  return res.json({
+    status: 200,
+    message: `Successfully updated contacts photo with id ${contactId}!`,
+    data: {},
+  });
 };
