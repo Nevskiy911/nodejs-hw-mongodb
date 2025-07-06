@@ -30,7 +30,7 @@ contactsRouter.get('/contacts', ctrlWrapper(getAllContacts));
 contactsRouter.get('/contacts/:contactId', ctrlWrapper(getOneContact));
 contactsRouter.post(
   '/contacts',
-  upload.single('photoUrl'),
+  upload.single('photo'),
   validateBody(createContactSchema),
   ctrlWrapper(createContact),
 );
@@ -41,7 +41,7 @@ contactsRouter.put(
 );
 contactsRouter.patch(
   '/contacts/:contactId',
-  upload.single('photoUrl'),
+  upload.single('photo'),
   validateBody(updateContactSchema),
   ctrlWrapper(patchContact),
 );

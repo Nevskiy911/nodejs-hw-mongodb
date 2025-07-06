@@ -58,18 +58,18 @@ export const getOneContactService = async (contactId, userId, role) => {
 };
 
 export const createContactService = async (data, file) => {
-  let photoUrl = null;
+  let photo = null;
 
   if (file) {
-    photoUrl = await saveFile(file);
+    photo = await saveFile(file);
   }
-  return Contact.create({ ...data, photoUrl: photoUrl });
+  return Contact.create({ ...data, photo: photo });
 };
 
 export const patchContactService = async (contactId, data, userId, file) => {
   if (file) {
-    const photoUrl = await saveFile(file);
-    data.photo = photoUrl;
+    const photo = await saveFile(file);
+    data.photo = photo;
   }
 
   const updated = await Contact.findOneAndUpdate(

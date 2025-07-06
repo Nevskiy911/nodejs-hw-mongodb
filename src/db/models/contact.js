@@ -19,7 +19,7 @@ const contactSchema = new Schema(
       required: true,
       ref: User,
     },
-    photoUrl: {
+    photo: {
       type: String,
       required: false,
     },
