@@ -1,8 +1,15 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { PERMANENT_UPLOAD_DIR } from '../constants/paths.js';
+import createHttpError from 'http-errors';
+import { ENV_VARS } from '../constants/envVars.js';
+import { getEnvVar } from './getEnvVar.js';
+import { saveFileToCloudinary } from './save-file-to-cloudinary.js';
+import { saveFileToLocal } from './save-file-to-local.js';
 
 export const saveFile = async (file) => {
-  const newPath = path.join(PERMANENT_UPLOAD_DIR, file.filename);
-  await fs.rename(file.path, newPath);
+  if (getEnvVar(ENV_VARS.FILES_SAVING_STRATEGY) === 'cloudinary') {
+    return await saveFileToCloudinary(file);
+  } else if (getEnvVar(ENV_VARS.FILES_SAVING_STRATEGY) === 'local') {
+    return await saveFileToLocal(file);
+  }
+
+  throw createHttpError('Unknown files storage route');
 };

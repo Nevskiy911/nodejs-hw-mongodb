@@ -6,7 +6,7 @@ import {
   getOneContactService,
   patchContactService,
   putContactService,
-  uploadContactsPhoto,
+  // uploadContactsPhoto,
 } from '../services/contacts.js';
 import {
   parseFilters,
@@ -54,10 +54,13 @@ export const getOneContact = async (req, res) => {
 };
 
 export const createContact = async (req, res) => {
-  const newContact = await createContactService({
-    ...req.body,
-    userId: req.body.userId ?? req.user._id,
-  });
+  const newContact = await createContactService(
+    {
+      ...req.body,
+      userId: req.body.userId ?? req.user._id,
+    },
+    req.file,
+  );
 
   res.status(201).json({
     status: 201,
@@ -70,7 +73,12 @@ export const patchContact = async (req, res) => {
   const { contactId } = req.params;
   const userId = req.user._id;
 
-  const updated = await patchContactService(contactId, req.body, userId);
+  const updated = await patchContactService(
+    contactId,
+    req.body,
+    userId,
+    req.file,
+  );
 
   res.status(200).json({
     status: 200,
@@ -102,12 +110,12 @@ export const deleteContact = async (req, res) => {
   res.status(204).end();
 };
 
-export const uploadContactPhoto = async (req, res) => {
-  const { contactId } = req.params;
-  const contact = await uploadContactsPhoto(contactId, req.file);
-  return res.json({
-    status: 200,
-    message: `Successfully updated contacts photo with id ${contactId}!`,
-    data: {},
-  });
-};
+// export const uploadContactPhoto = async (req, res) => {
+//   const { contactId } = req.params;
+//   const contact = await uploadContactsPhoto(contactId, req.file);
+//   return res.json({
+//     status: 200,
+//     message: `Successfully updated contacts photo with id ${contactId}!`,
+//     data: contact,
+//   });
+// };

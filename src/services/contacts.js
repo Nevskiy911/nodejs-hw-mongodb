@@ -57,11 +57,21 @@ export const getOneContactService = async (contactId, userId, role) => {
   return contact;
 };
 
-export const createContactService = async (data) => {
-  return Contact.create(data);
+export const createContactService = async (data, file) => {
+  let photoUrl = null;
+
+  if (file) {
+    photoUrl = await saveFile(file);
+  }
+  return Contact.create({ ...data, photoUrl: photoUrl });
 };
 
-export const patchContactService = async (contactId, data, userId) => {
+export const patchContactService = async (contactId, data, userId, file) => {
+  if (file) {
+    const photoUrl = await saveFile(file);
+    data.photo = photoUrl;
+  }
+
   const updated = await Contact.findOneAndUpdate(
     { _id: contactId, userId },
     data,
@@ -107,11 +117,16 @@ export const deleteContactService = async (contactId, userId, role) => {
   }
 };
 
-export const uploadContactsPhoto = async (contactId, file) => {
-  const url = await saveFile(file);
-  const contact = await Contact.findByIdAndUpdate(contactId, {
-    photoUrl: url,
-  });
+// export const uploadContactsPhoto = async (contactId, file) => {
+//   const url = await saveFile(file);
 
-  return contact;
-};
+//   const contact = await Contact.findByIdAndUpdate(
+//     contactId,
+//     {
+//       photoUrl: url,
+//     },
+//     { new: true },
+//   );
+
+//   return contact;
+// };

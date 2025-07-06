@@ -6,6 +6,7 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import cookieParser from 'cookie-parser';
 import { requestIdMiddleware } from './middlewares/requestId.js';
 import router from './routers/index.js';
+import { PERMANENT_UPLOAD_DIR } from './constants/paths.js';
 
 export const setupServer = () => {
   const app = express();
@@ -25,6 +26,8 @@ export const setupServer = () => {
       },
     }),
   );
+
+  app.use('/uploads', express.static(PERMANENT_UPLOAD_DIR));
 
   app.use('/', router);
 

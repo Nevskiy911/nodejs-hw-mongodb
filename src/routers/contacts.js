@@ -6,7 +6,7 @@ import {
   patchContact,
   putContact,
   getOneContact,
-  uploadContactPhoto,
+  // uploadContactPhoto,
 } from '../controllers/contacts.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { validateMongoDBId } from '../middlewares/isValidId.js';
@@ -30,6 +30,7 @@ contactsRouter.get('/contacts', ctrlWrapper(getAllContacts));
 contactsRouter.get('/contacts/:contactId', ctrlWrapper(getOneContact));
 contactsRouter.post(
   '/contacts',
+  upload.single('photoUrl'),
   validateBody(createContactSchema),
   ctrlWrapper(createContact),
 );
@@ -40,14 +41,15 @@ contactsRouter.put(
 );
 contactsRouter.patch(
   '/contacts/:contactId',
+  upload.single('photoUrl'),
   validateBody(updateContactSchema),
   ctrlWrapper(patchContact),
 );
-contactsRouter.post(
-  '/contacts/:contactId/upload-photo',
-  upload.single('photoUrl'),
-  ctrlWrapper(uploadContactPhoto),
-);
+// contactsRouter.post(
+//   '/contacts/:contactId/upload-photo',
+//   upload.single('photoUrl'),
+//   ctrlWrapper(uploadContactPhoto),
+// );
 contactsRouter.delete('/contacts/:contactId', ctrlWrapper(deleteContact));
 
 export default contactsRouter;
