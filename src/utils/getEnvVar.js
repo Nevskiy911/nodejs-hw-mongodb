@@ -1,8 +1,9 @@
 import 'dotenv/config';
+import createHttpError from 'http-errors';
 
 export const getEnvVar = (name, defaultValue) => {
   if (!name) {
-    throw new Error(`getEnvVar was called with undefined or empty name`);
+    throw createHttpError(`getEnvVar was called with undefined or empty name`);
   }
 
   const envVar = process.env[name];
@@ -14,6 +15,4 @@ export const getEnvVar = (name, defaultValue) => {
   if (!envVar && defaultValue) {
     return defaultValue;
   }
-
-  throw new Error(`Env var ${name} should be provided`);
 };

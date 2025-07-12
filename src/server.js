@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import { requestIdMiddleware } from './middlewares/requestId.js';
 import router from './routers/index.js';
 import { PERMANENT_UPLOAD_DIR } from './constants/paths.js';
+import { setupSwagger } from './middlewares/swagger.js';
 
 export const setupServer = () => {
   const app = express();
@@ -26,6 +27,8 @@ export const setupServer = () => {
       },
     }),
   );
+
+  app.use('/api-docs', setupSwagger());
 
   app.use('/uploads', express.static(PERMANENT_UPLOAD_DIR));
 

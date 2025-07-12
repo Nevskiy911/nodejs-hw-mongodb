@@ -1,0 +1,72 @@
+tags:
+  - Contacts
+summary: Update contact
+operationId: updateContact
+description: 'Update an existing contact by ID with provided fields'
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: contactId
+    required: true
+    schema:
+      type: string
+    description: The ID of the contact to update
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        properties:
+          name:
+            description: "Contact's name"
+            type: string
+            example: 'John'
+          phoneNumber:
+            description: "Contact's phone number"
+            type: string
+            example: +48155615415
+          email:
+            description: "Contact's email"
+            type: string
+          isFavourite:
+            description: 'Is contact in favourites?'
+            type: string
+            enum: ['true', 'false']
+          contactType:
+            description: "Contact's type"
+            type: string
+            enum: ['work', 'home', 'personal']
+          photo:
+            description: 'Updated contact photo'
+            type: string
+            format: binary
+responses:
+  '200':
+    description: Contact updated successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Contact updated successfully
+            data:
+              type: object
+              $ref: ../../../components/schemas/contact.yaml
+  '400':
+    description: Invalid input or missing fields
+  '401':
+    $ref: ../../../components/responses/401.yaml
+  '403':
+    description: Forbidden. You are not allowed to update this contact.
+  '404':
+    description: Contact not found
