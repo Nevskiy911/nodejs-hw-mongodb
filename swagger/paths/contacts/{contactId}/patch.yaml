@@ -70,3 +70,11 @@ responses:
     description: Forbidden. You are not allowed to update this contact.
   '404':
     description: Contact not found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Contact not found

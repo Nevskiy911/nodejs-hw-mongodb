@@ -8,6 +8,8 @@ required:
   - contactType
   - userId
   - photo
+  - createdAt
+  - updatedAt
 properties:
   _id:
     description: "Contact's id"
@@ -16,7 +18,11 @@ properties:
   name:
     description: "Contact's name"
     type: string
-    example: 'John Doe'
+    example: John
+  phoneNumber:
+    description: "Contact's phone number"
+    type: string
+    example: '+48216566235'
   email:
     description: "Contact's email"
     type: string
@@ -37,3 +43,11 @@ properties:
     description: "Link to contact's photo"
     type: string
     example: https://res.cloudinary.com/uqwgdu/image/upload/image.png
+  createdAt:
+    description: 'Date of create the contact'
+    type: string
+    example: 2025-07-12T08:58:49.097Z
+  updatedAt:
+    description: 'Date of update the contact'
+    type: string
+    example: 2025-07-12T08:58:49.097Z

@@ -27,6 +27,19 @@ parameters:
       type: string
       enum: ['home', 'work', 'personal']
       example: work
+  - in: query
+    name: sortBy
+    schema:
+      type: string
+      enum: [name, phoneNumber, contactType]
+      example: name
+  - in: query
+    name: sortOrder
+    schema:
+      type: string
+      enum: [asc, desc]
+      example: asc
+
 responses:
   '200':
     description: 'Get all your contacts'
@@ -34,37 +47,39 @@ responses:
       application/json:
         schema:
           type: object
-          required:
-            - contacts
-            - page
-            - perPage
-            - totalItems
-            - totalPages
-            - hasPreviousPage
-            - hasNextPage
           properties:
-            contacts:
-              type: array
-              items:
-                $ref: ../../components/schemas/contact.yaml
-            page:
+            status:
               type: number
-              example: 1
-            perPage:
-              type: number
-              example: 5
-            totalItems:
-              type: number
-              example: 10
-            totalPages:
-              type: number
-              example: 3
-            hasPreviousPage:
-              type: boolean
-              example: true
-            hasNextPage:
-              type: boolean
-              example: false
-
+              example: 200
+            message:
+              type: string
+              example: Successfully found contacts!
+            data:
+              type: object
+              required:
+                - contacts
+                - page
+                - perPage
+                - totalItems
+                - totalPages
+                - hasPreviousPage
+                - hasNextPage
+              properties:
+                contacts:
+                  type: array
+                  items:
+                    $ref: ../../components/schemas/contact.yaml
+                page:
+                  type: number
+                perPage:
+                  type: number
+                totalItems:
+                  type: number
+                totalPages:
+                  type: number
+                hasPreviousPage:
+                  type: boolean
+                hasNextPage:
+                  type: boolean
   '401':
     $ref: '../../components/responses/401.yaml'
